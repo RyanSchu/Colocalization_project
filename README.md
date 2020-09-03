@@ -9,6 +9,12 @@ Authors: Ryan Schubert, Raqual Zazi and Jie Zhang
 
 2.) Test the performance of “coloc” in different populations
 
+Stretch Goals:
+ 
+3.) Test a variety of the parameters in the software to test how they effect model performance
+
+4.) Write thorough documentation of the pipeline and software
+
 # References
 
 Coloc software: https://chr1swallace.github.io/coloc/index.html
