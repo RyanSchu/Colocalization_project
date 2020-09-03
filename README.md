@@ -1,4 +1,4 @@
-# Colocalization_project
+# Colocalization project
 Consulting project
 
 Authors: Ryan Schubert, Raqual Zazi and Jie Zhang
@@ -12,4 +12,5 @@ Authors: Ryan Schubert, Raqual Zazi and Jie Zhang
 # References
 
 Coloc software: https://chr1swallace.github.io/coloc/index.html
+
 Eliciting priors and relaxing the single causal variant assumption in colocalisation analyses https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1008720
