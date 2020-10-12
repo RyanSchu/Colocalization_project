@@ -8,10 +8,17 @@ Single Causal variant tasks
 6) Add in pvalue and test statistic modes
 7) add in ability to specify sd of response 
 8) add in handling for categorical response (only handles continuous quantitative responses at the moment)
-9) add in sorting for data
-
+9) add in check that the two snp data sets are sorted
+10) documentation and example data
+11) Run it on all our data
+12) make copies of test data with pvals and test statistics
 
 Multiple causal variant tasks
 
 1) make separate script - needs to call code from coloc master directly
+2) test on everything
+
+Stretch goal - Simulate data and test on simulated data
+
+
 
