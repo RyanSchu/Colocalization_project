@@ -2,10 +2,14 @@ Single Causal variant tasks
 
 1) Add error checks for files existing
 2) Add error checks for files being empty
-3) Add functionality to take the intersection of predictors from two files
-4) Add parallelisation features
-5) make a shell wrapper
-6) sensitivity analysis automation
+3) Add parallelisation features
+4) make a shell wrapper
+5) sensitivity analysis automation
+6) Add in pvalue and test statistic modes
+7) add in ability to specify sd of response 
+8) add in handling for categorical response (only handles continuous quantitative responses at the moment)
+9) add in sorting for data
+
 
 Multiple causal variant tasks
 
