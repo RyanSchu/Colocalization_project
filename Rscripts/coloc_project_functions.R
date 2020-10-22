@@ -139,7 +139,15 @@ main<-function(eqtl,gwas,mode="bse",
     if(is.null(gwasPvalCol)) {print("GWAS Pval column not set. Please set this and try again. Exiting"); return() }
   } else {
     cat("Mode not recognized. Please choose one of [ bse, p ]. Exiting\n"); return()
+  }else if ( mode == "t" ){
+      cat("Running coloc using the t-stat method\n")
+      if(is.null(eqtlTstatCol)) {print("eQTL Tstat column not set. Please set this and try again. Exiting"); return() }
+      if(is.null(gwasTstatCol)) {print("GWAS Tstat column not set. Please set this and try again. Exiting"); return() }
+  } else {
+    cat("Mode not recognized. Please choose one of [ bse, p, t ]. Exiting\n"); return()
   }
+  }
+}
   
   #uncomment the follwing lines when running in a Unix/linux environ
   # cat("Reading in data\n")
@@ -199,10 +207,81 @@ main<-function(eqtl,gwas,mode="bse",
       }
 #      print(summary)
     }
-  } else if ( mode == "p"){
-    print("Not done yet")
-    return()
-  }
-  
-}
+  }   } else if (mode == "p"){
+    cat("Processing GWAS\n")
+    
+    GWAS_snps<-get_gwas_snps(gwas_df = gwasdf,snpCol=gwasSNPCol)
+    
+    for (i in 1:ngenes){
+      gene<-gene_list[i]
+      cat("Processing gene",gene," ",i,"/",ngenes,"\n")
+      QTL_snps<-get_eqtl_snps(gene_id=gene,eqtl_df=eqtldf,snpCol=eqtlSNPCol,geneCol=eqtlGeneCol)
+      intersection<-base::intersect(GWAS_snps$snp,QTL_snps$snp)
+      nsnps<-length(intersection)
+      if (nsnps == 0) { print("0 snps present in intersection for this gene. skipping"); next}
+      cat(nsnps, "snps found in GWAS and eQTL intersection for this gene\n")
+      GWAS_effects<-get_gwas_effects(gwas_df = gwasdf, pvalCol = gwasPvalCol,snpCol=gwasSNPCol,snpList=intersection)
+      QTL_effects<-get_gene_eqtl_effects(gene_id=gene,eqtl_df = eqtldf, pvalCol=eqtlPvalCol,snpCol=eqtlSNPCol,snpList=intersection)
+      if (length(GWAS_effects$pval) != length(QTL_effects$pval)) { print("List of effect size of differing lengths. Duplicates SNPs may be present. Please resolve and rerun. Exiting."); return()}
+      
+      if (!is.null(gwasMAFCol)){ 
+        print("using maf from gwas data set")
+        maf<-get_gwas_maf(gwas_df=gwasdf,mafCol=gwasMAFCol,snpCol = gwasSNPCol,snpList=intersection)
+      } else if(!is.null(eqtlMAFCol)){
+        print("using maf from QTL data set")
+        maf<-get_gene_eqtl_maf(gene_id=gene,eqtl_df = eqtldf,mafcol=eqtlMAFCol,geneCol=eqtlGeneCol,snpCol=eqtlSNPCol,snpList=intersection)
+      }
+      coloc_result <- coloc.abf(dataset1=list(pval=GWAS_effects$pval, N=gwasSampleSize,type="quant"),
+                                dataset2=list(pval=QTL_effects$pval, N=eqtlSampleSize,type="quant"),
+                                MAF=maf$maf)
+      if ( coloc_result$summary[6]> 0.5 )
+        sensitivity(coloc_result,rule=rule,doplot=TRUE)
+      summary<-coloc_result$summary
+      summary$gene<-gene
+      summary<-bind_cols(summary)
+      str(summary)
+      if ( !is.null(outFile) ){
+        write.table(summary,outFile,append=T,sep='\t',col.names=F,quote=F,row.names=F) 
+      }
+    }
+      #      print(summary)
+    } else if (mode == "t"){
+      cat("Processing GWAS\n")
+      
+      GWAS_snps<-get_gwas_snps(gwas_df = gwasdf,snpCol=gwasSNPCol)
+      
+      for (i in 1:ngenes){
+        gene<-gene_list[i]
+        cat("Processing gene",gene," ",i,"/",ngenes,"\n")
+        QTL_snps<-get_eqtl_snps(gene_id=gene,eqtl_df=eqtldf,snpCol=eqtlSNPCol,geneCol=eqtlGeneCol)
+        intersection<-base::intersect(GWAS_snps$snp,QTL_snps$snp)
+        nsnps<-length(intersection)
+        if (nsnps == 0) { print("0 snps present in intersection for this gene. skipping"); next}
+        cat(nsnps, "snps found in GWAS and eQTL intersection for this gene\n")
+        GWAS_effects<-get_gwas_effects(gwas_df = gwasdf, tstatCol = gwasTstatCol,snpCol=gwasSNPCol,snpList=intersection)
+        QTL_effects<-get_gene_eqtl_effects(gene_id=gene,eqtl_df = eqtldf, tstatCol=eqtlTstatCol,snpCol=eqtlSNPCol,snpList=intersection)
+        if (length(GWAS_effects$tstat) != length(QTL_effects$tstat)) { print("List of effect size of differing lengths. Duplicates SNPs may be present. Please resolve and rerun. Exiting."); return()}
+        
+        if (!is.null(gwasMAFCol)){ 
+          print("using maf from gwas data set")
+          maf<-get_gwas_maf(gwas_df=gwasdf,mafCol=gwasMAFCol,snpCol = gwasSNPCol,snpList=intersection)
+        } else if(!is.null(eqtlMAFCol)){
+          print("using maf from QTL data set")
+          maf<-get_gene_eqtl_maf(gene_id=gene,eqtl_df = eqtldf,mafcol=eqtlMAFCol,geneCol=eqtlGeneCol,snpCol=eqtlSNPCol,snpList=intersection)
+        }
+        coloc_result <- coloc.abf(dataset1=list(pval=GWAS_effects$tstat, N=gwasSampleSize,type="quant"),
+                                  dataset2=list(pval=QTL_effects$tstat, N=eqtlSampleSize,type="quant"),
+                                  MAF=maf$maf)
+        if ( coloc_result$summary[6]> 0.5 )
+          sensitivity(coloc_result,rule=rule,doplot=TRUE)
+        summary<-coloc_result$summary
+        summary$gene<-gene
+        summary<-bind_cols(summary)
+        str(summary)
+        if ( !is.null(outFile) ){
+          write.table(summary,outFile,append=T,sep='\t',col.names=F,quote=F,row.names=F) 
+        }
+        #      print(summary)
+      }
+    }
 ?write.table
