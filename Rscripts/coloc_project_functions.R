@@ -126,7 +126,7 @@ get_gwas_maf<-function(gwas_df,mafCol,snpCol,snpList){
 
 main<-function(eqtl,gwas,mode="bse",
                eqtlGeneCol=NULL,eqtlSNPCol=NULL,eqtlMAFCol=NULL,eqtlPvalCol=NULL,eqtlBetaCol=NULL,eqtlSeCol=NULL, eqtlSampleSize=NULL,
-               gwasSNPCol=NULL,gwasMAFCol=NULL,gwasPvalCol=NULL,gwasBetaCol=NULL,gwasSeCol=NULL,gwasSampleSize=NULL,
+               gwasSNPCol=NULL,gwasMAFCol=NULL,gwasPvalCol=NULL,gwasBetaCol=NULL,gwasSeCol=NULL,gwasSampleSize=NULL,rule=NULL,
                outFile=NULL){
   if(is.null(eqtlSampleSize) || is.null(gwasSampleSize)) {print("Sample sizes not set. Please make sure both GWAS and QTL sample sizes are set. Exiting."); return()}
   if( mode  == "bse") {
@@ -188,6 +188,8 @@ main<-function(eqtl,gwas,mode="bse",
       coloc_result <- coloc.abf(dataset1=list(beta=GWAS_effects$beta, varbeta=GWAS_effects$var, N=gwasSampleSize,type="quant"),
                           dataset2=list(beta=QTL_effects$beta, varbeta=QTL_effects$var, N=eqtlSampleSize,type="quant"),
                           MAF=maf$maf)
+      if ( coloc_result$summary[6]> 0.5 )
+      sensitivity(coloc_result,rule=rule,doplot=TRUE)
       summary<-coloc_result$summary
       summary$gene<-gene
       summary<-bind_cols(summary)
