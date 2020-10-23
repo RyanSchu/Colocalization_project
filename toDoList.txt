@@ -20,5 +20,8 @@ Ryan
 
 Stretch goal - Simulate data and test on simulated data
 
-Hello
+Extra Tasks 
+1) Prepare the Presentation
+2) Write the Paper 
+
 
