@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 library(dplyr)
+library(data.table)
 "%&%" = function(a,b) paste(a,b,sep="")
 ```
 
@@ -19,7 +20,7 @@ the eQTL data has pvals, betas and se, but not the t statistic, so we will calcu
 for ( i in c("AFA","CAU","HIS","ALL","AFHI")){
   data<-read.table("Z:/Colocalization_project/data/eQTL_" %&% i %&% "_Height.txt.gz",header=T)
   data<-mutate(data,tstat=slope/slope_se)
-  write.table(data,"Z:/Colocalization_project/data/eQTL_" %&% i %&% "_tstat_Height.txt",col.names = T)
+  fwrite(data,"Z:/Colocalization_project/data/eQTL_" %&% i %&% "_tstat_Height.txt",col.names = T,row.names = F,quote=F,sep='\t')
 }
 
 ```
@@ -33,7 +34,7 @@ for ( i in c("AFA","CAU","HIS","ALL","AFHI")){
   data<-read.table("Z:/Colocalization_project/data/GWAS_" %&% i %&% "_Height.txt.gz",header=T)
   data<-mutate(data,tstat=effect_size/standard_error)
   data<-mutate(data,pval_approx=2*pt(tstat,49796-1,lower.tail=F))
-  write.table(data,"Z:/Colocalization_project/data/GWAS_" %&% i %&% "_tstat_Height.txt",col.names = T)
+  fwrite(data,"Z:/Colocalization_project/data/GWAS_" %&% i %&% "_tstat_Height.txt",col.names = T,row.names = F,quote=F,sep='\t')
   
 }
 ```
