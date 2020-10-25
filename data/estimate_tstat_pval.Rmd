@@ -1,0 +1,40 @@
+---
+title: "create t-stat and pval data"
+author: "Ryan Schubert"
+date: "October 24, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+"%&%" = function(a,b) paste(a,b,sep="")
+```
+
+## EQTL data
+
+the eQTL data has pvals, betas and se, but not the t statistic, so we will calculate it quick and easy by dividing the beta and the standard error
+
+```{r}
+
+for ( i in c("AFA","CAU","HIS","ALL","AFHI")){
+  data<-read.table("Z:/Colocalization_project/data/eQTL_" %&% i %&% "_Height.txt.gz",header=T)
+  data<-mutate(data,tstat=slope/slope_se)
+  write.table(data,"Z:/Colocalization_project/data/eQTL_" %&% i %&% "_tstat_Height.txt",col.names = T)
+}
+
+```
+
+## GWAS data
+
+Next we need to edit the gwas data. This contains betas and se, but no pvalues or test statistic. we can caluclate test stats and approximate pvalues fairly easily
+
+```{r pressure, echo=FALSE}
+for ( i in c("AFA","CAU","HIS","ALL","AFHI")){
+  data<-read.table("Z:/Colocalization_project/data/GWAS_" %&% i %&% "_Height.txt.gz",header=T)
+  data<-mutate(data,tstat=effect_size/standard_error)
+  data<-mutate(data,pval_approx=2*pt(tstat,49796-1,lower.tail=F))
+  write.table(data,"Z:/Colocalization_project/data/GWAS_" %&% i %&% "_tstat_Height.txt",col.names = T)
+  
+}
+```
+
