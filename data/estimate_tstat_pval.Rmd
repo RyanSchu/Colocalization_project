@@ -19,7 +19,7 @@ the eQTL data has pvals, betas and se, but not the t statistic, so we will calcu
 
 for ( i in c("AFA","CAU","HIS","ALL","AFHI")){
   data<-read.table("Z:/Colocalization_project/data/eQTL_" %&% i %&% "_Height.txt.gz",header=T)
-  data<-mutate(data,tstat=slope/slope_se)
+  data<-mutate(data,tstat=abs(slope/slope_se))
   fwrite(data,"Z:/Colocalization_project/data/eQTL_" %&% i %&% "_tstat_Height.txt",col.names = T,row.names = F,quote=F,sep='\t')
 }
 
@@ -32,7 +32,7 @@ Next we need to edit the gwas data. This contains betas and se, but no pvalues o
 ```{r pressure, echo=FALSE}
 for ( i in c("AFA","CAU","HIS","ALL","AFHI")){
   data<-read.table("Z:/Colocalization_project/data/GWAS_" %&% i %&% "_Height.txt.gz",header=T)
-  data<-mutate(data,tstat=effect_size/standard_error)
+  data<-mutate(data,tstat=abs(effect_size/standard_error))
   data<-mutate(data,pval_approx=2*pt(tstat,49796-1,lower.tail=F))
   fwrite(data,"Z:/Colocalization_project/data/GWAS_" %&% i %&% "_tstat_Height.txt",col.names = T,row.names = F,quote=F,sep='\t')
   
