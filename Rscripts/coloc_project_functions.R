@@ -218,8 +218,14 @@ main<-function(eqtl,gwas,mode="bse",
                           dataset2=list(beta=QTL_effects$beta, varbeta=QTL_effects$var, N=eqtlSampleSize,type="quant"),
                           MAF=maf$maf)
       # if ( coloc_result$summary[6]> 0.5 ){
-      #   sensitivity(coloc_result,rule=rule,doplot=TRUE)
-      # }
+     if (coloc_result$summary[6]>0.5){
+        if (coloc_result$summary[1]>1){
+          pdfname<-as.character(unlist(strsplit(outFile, split = "_")))
+          pdf(paste0(pdfname[2],"-t-",gene,".pdf"))
+          sensitivity(coloc_result,rule=rule)
+          dev.off()
+        }
+      }
       summary<-coloc_result$summary
       summary$gene<-gene
       summary<-bind_cols(summary)
@@ -257,8 +263,14 @@ main<-function(eqtl,gwas,mode="bse",
       coloc_result <- coloc.abf(dataset1=list(pvalues=GWAS_effects$p, N=gwasSampleSize,type="quant"),
                                 dataset2=list(pvalues=QTL_effects$p, N=eqtlSampleSize,type="quant"),
                                 MAF=maf$maf)
-      # if ( coloc_result$summary[6]> 0.5 )
-      #   sensitivity(coloc_result,rule=rule,doplot=TRUE)
+     if (coloc_result$summary[6]>0.5){
+        if (coloc_result$summary[1]>1){
+          pdfname<-as.character(unlist(strsplit(outFile, split = "_")))
+          pdf(paste0(pdfname[2],"-t-",gene,".pdf"))
+          sensitivity(coloc_result,rule=rule)
+          dev.off()
+        }
+      }
       summary<-coloc_result$summary
       summary$gene<-gene
       summary<-bind_cols(summary)
@@ -295,8 +307,14 @@ main<-function(eqtl,gwas,mode="bse",
         coloc_result <- coloc.abf(dataset1=list(pval=GWAS_effects$t, N=gwasSampleSize,type="quant"),
                                   dataset2=list(pval=QTL_effects$t, N=eqtlSampleSize,type="quant"),
                                   MAF=maf$maf)
-        # if ( coloc_result$summary[6]> 0.5 )
-        #   sensitivity(coloc_result,rule=rule,doplot=TRUE)
+        if (coloc_result$summary[6]>0.5){
+        if (coloc_result$summary[1]>1){
+          pdfname<-as.character(unlist(strsplit(outFile, split = "_")))
+          pdf(paste0(pdfname[2],"-t-",gene,".pdf"))
+          sensitivity(coloc_result,rule=rule)
+          dev.off()
+        }
+      }
         summary<-coloc_result$summary
         summary$gene<-gene
         summary<-bind_cols(summary)
