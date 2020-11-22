@@ -154,6 +154,7 @@ main<-function(eqtl,gwas,mode="bse",
                gwasSNPCol=NULL,gwasMAFCol=NULL,gwasPvalCol=NULL,gwasBetaCol=NULL,gwasSeCol=NULL, gwasTstatCol=NULL,gwasSampleSize=NULL,rule=NULL,
                outFile=NULL){
   if(is.null(eqtlSampleSize) || is.null(gwasSampleSize)) {print("Sample sizes not set. Please make sure both GWAS and QTL sample sizes are set. Exiting."); return()}
+  if(is.null(eqtlGeneCol)) {print("QTL gene column not set. Exiting."); return()}
   if( mode  == "bse") {
     cat("Running coloc using the beta/standard error method\n")
     if(is.null(eqtlBetaCol) || is.null(eqtlSeCol)) {print("eQTL Beta/Se column not set. Please set these and try again. Exiting"); return() }
@@ -181,7 +182,7 @@ main<-function(eqtl,gwas,mode="bse",
   gwasdf<-read.table(gwas,header=T,stringsAsFactors = F)
   
   cat("Getting gene list\n")
-  gene_list<-get_gene_list(eqtldf)
+  gene_list<-get_gene_list(eqtldf,geneCol=eqtlGeneCol)
   ngenes<-length(gene_list)
   if ( ngenes == 0 ) {print("0 genes found. Exiting.\n"); return()}
   cat(ngenes,"genes found\n")
