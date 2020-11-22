@@ -222,7 +222,7 @@ main<-function(eqtl,gwas,mode="bse",
      if (coloc_result$summary[6]>0.5){
         if (coloc_result$summary[1]>1){
           pdfname<-as.character(unlist(strsplit(outFile, split = "_")))
-          pdf(paste0(pdfname[2],"-t-",gene,".pdf"))
+          pdf(paste0(pdfname[2],"-bse-",gene,".pdf"))
           sensitivity(coloc_result,rule=rule)
           dev.off()
         }
@@ -267,7 +267,7 @@ main<-function(eqtl,gwas,mode="bse",
      if (coloc_result$summary[6]>0.5){
         if (coloc_result$summary[1]>1){
           pdfname<-as.character(unlist(strsplit(outFile, split = "_")))
-          pdf(paste0(pdfname[2],"-t-",gene,".pdf"))
+          pdf(paste0(pdfname[2],"-p-",gene,".pdf"))
           sensitivity(coloc_result,rule=rule)
           dev.off()
         }
