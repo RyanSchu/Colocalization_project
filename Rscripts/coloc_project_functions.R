@@ -205,7 +205,7 @@ main<-function(eqtl,gwas,mode="bse",
       if (nsnps == 0) { print("0 snps present in intersection for this gene. skipping"); next}
       cat(nsnps, "snps found in GWAS and eQTL intersection for this gene\n")
       GWAS_effects<-get_gwas_effects(gwas_df = gwasdf,betaCol = gwasBetaCol,seCol=gwasSeCol,snpCol=gwasSNPCol,snpList=intersection)
-      QTL_effects<-get_gene_eqtl_effects(gene_id=gene,eqtl_df = eqtldf,betaCol=eqtlBetaCol,seCol=eqtlSeCol,snpCol=eqtlSNPCol,snpList=intersection)
+      QTL_effects<-get_gene_eqtl_effects(gene_id=gene,geneCol=eqtlGeneCol,eqtl_df = eqtldf,betaCol=eqtlBetaCol,seCol=eqtlSeCol,snpCol=eqtlSNPCol,snpList=intersection)
       if (length(GWAS_effects$beta) != length(QTL_effects$beta)) { print("List of effect sizes of differing lengths. Duplicates SNPs may be present. Please resolve and rerun. Exiting."); return()}
       
       if (!is.null(gwasMAFCol)){ 
@@ -250,7 +250,7 @@ main<-function(eqtl,gwas,mode="bse",
       if (nsnps == 0) { print("0 snps present in intersection for this gene. skipping"); next}
       cat(nsnps, "snps found in GWAS and eQTL intersection for this gene\n")
       GWAS_effects<-get_gwas_pvalue(gwas_df = gwasdf, pvalCol = gwasPvalCol,snpCol=gwasSNPCol,snpList=intersection)
-      QTL_effects<-get_gene_eqtl_pvalue(gene_id=gene,eqtl_df = eqtldf, pvalCol=eqtlPvalCol,snpCol=eqtlSNPCol,snpList=intersection)
+      QTL_effects<-get_gene_eqtl_pvalue(gene_id=gene,geneCol=eqtlGeneCol,eqtl_df = eqtldf, pvalCol=eqtlPvalCol,snpCol=eqtlSNPCol,snpList=intersection)
       if (length(GWAS_effects$p) != length(QTL_effects$p)) { print("List of effect size of differing lengths. Duplicates SNPs may be present. Please resolve and rerun. Exiting."); return()}
       
       if (!is.null(gwasMAFCol)){ 
@@ -295,7 +295,7 @@ main<-function(eqtl,gwas,mode="bse",
         if (nsnps == 0) { print("0 snps present in intersection for this gene. skipping"); next}
         cat(nsnps, "snps found in GWAS and eQTL intersection for this gene\n")
         GWAS_effects<-get_gwas_tstat(gwas_df = gwasdf, tstatCol = gwasTstatCol,snpCol=gwasSNPCol,snpList=intersection)
-        QTL_effects<-get_gene_eqtl_tstat(gene_id=gene,eqtl_df = eqtldf, tstatCol=eqtlTstatCol,snpCol=eqtlSNPCol,snpList=intersection)
+        QTL_effects<-get_gene_eqtl_tstat(gene_id=gene,geneCol=eqtlGeneCol,eqtl_df = eqtldf, tstatCol=eqtlTstatCol,snpCol=eqtlSNPCol,snpList=intersection)
         if (length(GWAS_effects$t) != length(QTL_effects$t)) { print("List of effect size of differing lengths. Duplicates SNPs may be present. Please resolve and rerun. Exiting."); return()}
         
         if (!is.null(gwasMAFCol)){ 
